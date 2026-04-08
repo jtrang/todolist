@@ -1,18 +1,17 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { TaskSchema } from './Task';
 import type { ITask } from './Task';
 
 export interface IList extends Document {
   title: string;
-  tasks: [ITask];
+  tasks: ITask['_id'][];
 }
 
 export const ListSchema: Schema<IList> = new Schema({
   title: String,
-  tasks: {
-    type: [TaskSchema],
-    default: [],
-  },
+  tasks: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Task',
+  }],
 });
 
 export const ListModel = mongoose.model<IList>('List', ListSchema);

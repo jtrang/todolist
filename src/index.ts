@@ -1,6 +1,7 @@
 import express from 'express';
 import { connectDb } from './utils/db';
 import { TaskModel } from "./models/Task.ts";
+import type { ITask } from './models/Task.ts';
 import { ListModel } from "./models/List.ts";
 
 connectDb();
@@ -33,6 +34,29 @@ app.post('/api/list/create', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create list' });
+  }
+});
+
+app.get('/api/tasks', async (req, res) => {
+  console.log('api/tasks');
+  try {
+    const tasks = await TaskModel.find();
+    res.json(tasks);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get tasks' });
+  }
+});
+
+app.get('/api/lists', async (req, res) => {
+  console.log('api/lists');
+  try {
+    const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
+    console.log('==== lists?', lists);
+    res.json(lists);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get lists' });
   }
 });
 

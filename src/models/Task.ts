@@ -7,7 +7,10 @@ export interface ITask extends Document {
 
 export const TaskSchema: Schema<ITask> = new Schema({
   title: String,
-  isComplete: Boolean
+  isComplete: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 export const TaskModel = mongoose.model<ITask>('Task', TaskSchema);

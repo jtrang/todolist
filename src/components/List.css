@@ -1,0 +1,23 @@
+.list {
+  border: 1px solid green;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: yellow;
+}
+
+.checkbox {
+  display: inline-block;
+}
+
+.title {
+  display: inline-block;
+}
+
+@container (min-width: 400px) {
+  h2 {
+    color: red;
+  }
+}
