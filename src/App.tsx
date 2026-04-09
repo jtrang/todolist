@@ -13,9 +13,8 @@ function App() {
   }, []);
 
   return (
-    <div>
+    lists && <div>
       <h1>To Do List</h1>
-
       <ul>
         {lists.map((list) => (
           <List key={list._id} {...list} />

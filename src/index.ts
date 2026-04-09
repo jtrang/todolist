@@ -17,7 +17,7 @@ app.listen(3000, () => {
 app.post('/api/task/create', async (req, res) => {
   console.log('api/task/create');
   try {
-    const listId = req.body?.listId;
+    const listId = req.body?._id;
     const taskTitle = req.body?.title;
 
     if (!listId) {
@@ -32,7 +32,7 @@ app.post('/api/task/create', async (req, res) => {
       { _id: listId },
       { $push: { tasks: task._id } },
       { returnDocument: 'after' }
-    );
+    ).populate<{ tasks: ITask[] }>('tasks');
 
     res.json(list);
   } catch (err) {
@@ -68,7 +68,6 @@ app.get('/api/lists', async (req, res) => {
   console.log('api/lists');
   try {
     const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
-    console.log(util.inspect(lists, { depth: null }));
     res.json(lists);
   } catch (err) {
     console.error(err);
