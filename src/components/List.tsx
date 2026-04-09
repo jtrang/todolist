@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TaskCard, { type TaskProps } from "./TaskCard";
+import TaskCard, { type TaskProps } from "./Task";
 import NewTask from './NewTask';
 import "./List.css";
 
@@ -62,9 +62,8 @@ export function List({ _id, title, tasks }: ListProps) {
         {listTasks && listTasks.map((task) => (
           <TaskCard key={task._id} {...task} onCheckTask={(e) => onCheckTask(task._id, e.target.checked)} />
         ))}
+        <NewTask handleSubmit={(event) => handleSubmit(event)} />
       </ul>
-
-      <NewTask handleSubmit={(event) => handleSubmit(event)} />
     </div>
   );
 }

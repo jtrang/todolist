@@ -1,4 +1,4 @@
-import "./TaskCard.css";
+import "./Task.css";
 
 export interface TaskProps {
   _id: string;

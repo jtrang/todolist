@@ -1,0 +1,19 @@
+.taskCard {
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  border: 1px solid green;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  margin: 10px;
+  padding: 2px;
+}
+
+p {
+  margin: 0 0 0 3px;
+}
+
+input[type="checkbox"] {
+  height: 13px;
+  margin-top: 2px;
+}

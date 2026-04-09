@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-// import type { IList } from './models/List';
 import List, { type ListProps } from './components/List';
+import './App.css';
 
 function App() {
   const [lists, setLists] = useState<ListProps[]>([]);
@@ -15,7 +15,7 @@ function App() {
   return (
     lists && <div>
       <h1>To Do List</h1>
-      <ul>
+      <ul className="listWrapper">
         {lists.map((list) => (
           <List key={list._id} {...list} />
         ))}
