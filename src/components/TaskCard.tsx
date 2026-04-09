@@ -1,8 +1,14 @@
 import "./TaskCard.css";
 
-function TaskCard({ key, title, isComplete }: { key: string, title: string, isComplete: boolean }) {
+export interface TaskProps {
+  _id: string;
+  title: string;
+  isComplete: boolean;
+}
+
+function TaskCard({ _id, title, isComplete }: TaskProps) {
   return (
-    <li key={key} className="taskCard">
+    <li key={_id} className="taskCard">
       <input className="checkbox" type="checkbox" checked={isComplete} />
       <p className="title">{title}</p>
     </li>

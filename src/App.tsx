@@ -1,15 +1,9 @@
 import { useState, useEffect } from 'react';
-import type { ITask } from './models/Task';
-import List from "./components/List";
-
-interface IFrontendList {
-  _id: string;
-  title: string;
-  tasks: ITask[];
-}
+// import type { IList } from './models/List';
+import List, { type ListProps } from './components/List';
 
 function App() {
-  const [lists, setLists] = useState<IFrontendList[]>([]);
+  const [lists, setLists] = useState<ListProps[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:3000/api/lists")
@@ -24,7 +18,7 @@ function App() {
 
       <ul>
         {lists.map((list) => (
-          <List key={String(list._id)} title={list.title} tasks={list.tasks} />
+          <List key={list._id} {...list} />
         ))}
       </ul>
     </div>

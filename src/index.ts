@@ -3,6 +3,7 @@ import { connectDb } from './utils/db';
 import { TaskModel } from "./models/Task.ts";
 import type { ITask } from './models/Task.ts';
 import { ListModel } from "./models/List.ts";
+import util from 'util';
 
 connectDb();
 
@@ -16,9 +17,24 @@ app.listen(3000, () => {
 app.post('/api/task/create', async (req, res) => {
   console.log('api/task/create');
   try {
-    const taskTitle = req.body?.title || 'New Task';
+    const listId = req.body?.listId;
+    const taskTitle = req.body?.title;
+
+    if (!listId) {
+      return res.status(400).json({ error: 'List ID is required' });
+    }
+    if (!taskTitle) {
+      return res.status(400).json({ error: 'Task title is required' });
+    }
+
     const task = await TaskModel.create({ title: taskTitle });
-    res.json(task);
+    const list = await ListModel.findOneAndUpdate(
+      { _id: listId },
+      { $push: { tasks: task._id } },
+      { returnDocument: 'after' }
+    );
+
+    res.json(list);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create task' });
@@ -52,7 +68,7 @@ app.get('/api/lists', async (req, res) => {
   console.log('api/lists');
   try {
     const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
-    console.log('==== lists?', lists);
+    console.log(util.inspect(lists, { depth: null }));
     res.json(lists);
   } catch (err) {
     console.error(err);

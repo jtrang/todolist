@@ -1,11 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import type { ITask } from './Task';
 
+// Typescript interface
 export interface IList extends Document {
   title: string;
-  tasks: ITask['_id'][];
+  tasks: [Schema.Types.ObjectId];
 }
 
+// Mongoose schema
 export const ListSchema: Schema<IList> = new Schema({
   title: String,
   tasks: [{
@@ -14,4 +15,5 @@ export const ListSchema: Schema<IList> = new Schema({
   }],
 });
 
+// Mongoose model
 export const ListModel = mongoose.model<IList>('List', ListSchema);
