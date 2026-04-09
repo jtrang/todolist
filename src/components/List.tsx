@@ -15,10 +15,10 @@ export function List({ _id, title, tasks }: ListProps) {
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    await fetch("http://localhost:3000/api/task/create", {
-      method: "POST",
+    await fetch('http://localhost:3000/api/task/create', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         _id,
@@ -33,13 +33,34 @@ export function List({ _id, title, tasks }: ListProps) {
       .catch(err => console.log(err));
   }
 
+  async function onCheckTask(taskId: string, isComplete: boolean) {
+    await fetch('http://localhost:3000/api/task/status', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        _id: taskId,
+        isComplete,
+      })
+    })
+      .then(() => {
+        setListTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === taskId ? { ...task, isComplete } : task
+          )
+        );
+      })
+      .catch(err => console.log(err));
+  }
+
   return (
     <div key={_id}>
       <h2>{title}</h2>
 
       <ul className="list">
         {listTasks && listTasks.map((task) => (
-          <TaskCard key={task._id} {...task} />
+          <TaskCard key={task._id} {...task} onCheckTask={(e) => onCheckTask(task._id, e.target.checked)} />
         ))}
       </ul>
 

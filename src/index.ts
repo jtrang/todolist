@@ -3,7 +3,6 @@ import { connectDb } from './utils/db';
 import { TaskModel } from "./models/Task.ts";
 import type { ITask } from './models/Task.ts';
 import { ListModel } from "./models/List.ts";
-import util from 'util';
 
 connectDb();
 
@@ -38,6 +37,35 @@ app.post('/api/task/create', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to create task' });
+  }
+});
+
+app.post('/api/task/status', async (req, res) => {
+  console.log('api/task/status');
+  try {
+    const taskId = req.body?._id;
+    const status = req.body?.isComplete;
+
+    if (!req.body?._id) {
+      return res.status(400).json({ error: 'Task ID is required' });
+    }
+    if (typeof status !== 'boolean') {
+      return res.status(400).json({ error: 'isComplete must be a boolean' });
+    }
+
+    const task = await TaskModel.findOneAndUpdate(
+      { _id: taskId },
+      { isComplete: status },
+      { returnDocument: 'after' }
+    );
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+    res.json(task);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update task status' });
   }
 });
 
