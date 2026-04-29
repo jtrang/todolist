@@ -21,3 +21,7 @@
     color: red;
   }
 }
+
+.highlight {
+  border: solid 2px pink;
+}

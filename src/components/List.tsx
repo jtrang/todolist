@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import TaskCard, { type TaskProps } from "./Task";
 import NewTask from './NewTask';
 import "./List.css";
@@ -10,8 +11,23 @@ export interface ListProps {
 }
 
 export function List({ _id, title, tasks }: ListProps) {
+  const ref = useRef<HTMLDivElement>(null);
   const [listTasks, setListTasks] = useState<TaskProps[]>(tasks);
+  const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false);
 
+  useEffect(() => {
+    const el = ref.current;
+
+    if (!el) return;
+
+    return dropTargetForElements({
+      element: el,
+      onDragEnter: () => setIsDraggedOver(true),
+      onDragLeave: () => setIsDraggedOver(false),
+      onDrop: () => setIsDraggedOver(false),
+    });
+  }, []);
+  // TODO: rename function to reflect action
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -70,7 +86,7 @@ export function List({ _id, title, tasks }: ListProps) {
   }
 
   return (
-    <div key={_id}>
+    <div key={_id} ref={ref} className={isDraggedOver ? 'highlight' : ''}>
       <h2>{title}</h2>
 
       <ul className="list">
