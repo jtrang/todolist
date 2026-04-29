@@ -54,15 +54,34 @@ export function List({ _id, title, tasks }: ListProps) {
       .catch(err => console.log(err));
   }
 
+  async function onDeleteTask(taskId: string) {
+    await fetch('http://localhost:3000/api/task/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        _id: taskId,
+      })
+    }).then(() => {
+      setListTasks((prevTasks) =>
+        prevTasks.filter((task) => task._id !== taskId))
+    }).catch(err => console.log(err));
+  }
+
   return (
     <div key={_id}>
       <h2>{title}</h2>
 
       <ul className="list">
         {listTasks && listTasks.map((task) => (
-          <TaskCard key={task._id} {...task} onCheckTask={(e) => onCheckTask(task._id, e.target.checked)} />
+          <TaskCard
+            key={task._id}
+            {...task}
+            onCheckTask={(e) => onCheckTask(task._id, e.target.checked)}
+            onDeleteTask={() => onDeleteTask(task._id)} />
         ))}
-        <NewTask handleSubmit={(event) => handleSubmit(event)} />
+        <NewTask handleSubmit={handleSubmit} />
       </ul>
     </div>
   );

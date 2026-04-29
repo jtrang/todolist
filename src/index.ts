@@ -69,6 +69,20 @@ app.post('/api/task/status', async (req, res) => {
   }
 });
 
+app.delete('/api/task/delete', async (req, res) => {
+  console.log('api/task/delete', req.body);
+  try {
+    const task = await TaskModel.findByIdAndDelete(req.body?._id);
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+    res.status(200).send(`Task with id ${task._id} deleted successfully`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete task' });
+  }
+});
+
 app.post('/api/list/create', async (req, res) => {
   console.log('api/list/create');
   try {
