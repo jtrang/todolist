@@ -1,16 +1,17 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from 'react';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import TaskCard, { type TaskProps } from "./Task";
+import TaskCard, { type TaskProps } from './Task';
 import NewTask from './NewTask';
-import "./List.css";
+import './List.css';
 
 export interface ListProps {
   _id: string;
   title: string;
   tasks: TaskProps[];
+  onDeleteList: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export function List({ _id, title, tasks }: ListProps) {
+export function List({ _id, title, tasks, onDeleteList }: ListProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [listTasks, setListTasks] = useState<TaskProps[]>(tasks);
   const [isDraggedOver, setIsDraggedOver] = useState<boolean>(false);
@@ -28,7 +29,9 @@ export function List({ _id, title, tasks }: ListProps) {
     });
   }, []);
 
-  async function handleSubmitNewTask(event: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmitNewTask(
+    event: React.SubmitEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
     await fetch('/api/task/create', {
@@ -38,15 +41,15 @@ export function List({ _id, title, tasks }: ListProps) {
       },
       body: JSON.stringify({
         _id, // the list ID
-        title: event.target.newTaskTitle.value
-      })
+        title: event.target.newTaskTitle.value,
+      }),
     })
-      .then(res => res.json())
-      .then(data => {
-        setListTasks(data.tasks)
+      .then((res) => res.json())
+      .then((data) => {
+        setListTasks(data.tasks);
         event.target.newTaskTitle.value = '';
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 
   async function onCheckTask(taskId: string, isComplete: boolean) {
@@ -58,16 +61,16 @@ export function List({ _id, title, tasks }: ListProps) {
       body: JSON.stringify({
         _id: taskId,
         isComplete,
-      })
+      }),
     })
       .then(() => {
         setListTasks((prevTasks) =>
           prevTasks.map((task) =>
-            task._id === taskId ? { ...task, isComplete } : task
-          )
+            task._id === taskId ? { ...task, isComplete } : task,
+          ),
         );
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 
   async function onDeleteTask(taskId: string) {
@@ -78,25 +81,31 @@ export function List({ _id, title, tasks }: ListProps) {
       },
       body: JSON.stringify({
         _id: taskId,
+      }),
+    })
+      .then(() => {
+        setListTasks((prevTasks) =>
+          prevTasks.filter((task) => task._id !== taskId),
+        );
       })
-    }).then(() => {
-      setListTasks((prevTasks) =>
-        prevTasks.filter((task) => task._id !== taskId))
-    }).catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 
   return (
     <div key={_id} ref={ref} className={isDraggedOver ? 'highlight' : ''}>
       <h2>{title}</h2>
+      <button onClick={onDeleteList}>Delete</button>
 
       <ul className="list">
-        {listTasks && listTasks.map((task) => (
-          <TaskCard
-            key={task._id}
-            {...task}
-            onCheckTask={(e) => onCheckTask(task._id, e.target.checked)}
-            onDeleteTask={() => onDeleteTask(task._id)} />
-        ))}
+        {listTasks &&
+          listTasks.map((task) => (
+            <TaskCard
+              key={task._id}
+              {...task}
+              onCheckTask={(e) => onCheckTask(task._id, e.target.checked)}
+              onDeleteTask={() => onDeleteTask(task._id)}
+            />
+          ))}
         <NewTask handleSubmitNewTask={handleSubmitNewTask} />
       </ul>
     </div>

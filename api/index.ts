@@ -20,6 +20,21 @@ if (!process.env.VERCEL) {
   });
 }
 
+/**
+ * TASK ENDPOINTS
+ */
+
+app.get('/api/tasks', async (_, res) => {
+  console.log('api/tasks');
+  try {
+    const tasks = await TaskModel.find();
+    res.json(tasks);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get tasks' });
+  }
+});
+
 app.post('/api/task/create', async (req, res) => {
   console.log('api/task/create');
   try {
@@ -90,6 +105,21 @@ app.delete('/api/task/delete', async (req, res) => {
   }
 });
 
+/**
+ * LIST ENDPOINTS
+ */
+
+app.get('/api/lists', async (_, res) => {
+  console.log('api/lists');
+  try {
+    const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
+    res.json(lists);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to get lists' });
+  }
+});
+
 app.post('/api/list/create', async (req, res) => {
   console.log('api/list/create');
   try {
@@ -107,25 +137,16 @@ app.post('/api/list/create', async (req, res) => {
   }
 });
 
-app.get('/api/tasks', async (_, res) => {
-  console.log('api/tasks');
+app.delete('/api/list/delete', async (req, res) => {
   try {
-    const tasks = await TaskModel.find();
-    res.json(tasks);
+    const list = await ListModel.findByIdAndDelete(req.body?._id);
+    if (!list) {
+      return res.status(404).json({ error: 'List not found' });
+    }
+    res.status(200).send(`Task with id ${list._id} delete successfully`);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to get tasks' });
-  }
-});
-
-app.get('/api/lists', async (_, res) => {
-  console.log('api/lists');
-  try {
-    const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
-    res.json(lists);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to get lists' });
+    console.log(err);
+    res.status(500).json({ error: 'Failed to delete list' });
   }
 });
 

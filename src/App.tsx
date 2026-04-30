@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     fetch('/api/lists')
       .then((res) => res.json())
-      .then((data) => setLists(data))
+      .then((lists) => setLists(lists))
       .catch((err) => console.log(err));
   }, []);
 
@@ -36,6 +36,24 @@ function App() {
       .catch((err) => console.log(err));
   }
 
+  async function onDeleteList(listId: string) {
+    await fetch('/api/list/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        _id: listId,
+      }),
+    })
+      .then(() => {
+        setLists((prevLists) =>
+          prevLists.filter((list) => list._id !== listId),
+        );
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <>
       {lists && (
@@ -43,7 +61,11 @@ function App() {
           <h1>To Do List</h1>
           <ul className="listWrapper">
             {lists.map((list) => (
-              <List key={list._id} {...list} />
+              <List
+                key={list._id}
+                {...list}
+                onDeleteList={() => onDeleteList(list._id)}
+              />
             ))}
           </ul>
         </div>
