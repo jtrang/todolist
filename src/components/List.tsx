@@ -31,7 +31,7 @@ export function List({ _id, title, tasks }: ListProps) {
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    await fetch('http://localhost:3000/api/task/create', {
+    await fetch('/api/task/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export function List({ _id, title, tasks }: ListProps) {
   }
 
   async function onCheckTask(taskId: string, isComplete: boolean) {
-    await fetch('http://localhost:3000/api/task/status', {
+    await fetch('/api/task/status', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export function List({ _id, title, tasks }: ListProps) {
   }
 
   async function onDeleteTask(taskId: string) {
-    await fetch('http://localhost:3000/api/task/delete', {
+    await fetch('/api/task/delete', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

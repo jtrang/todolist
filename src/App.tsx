@@ -8,7 +8,7 @@ function App() {
   const [lists, setLists] = useState<ListProps[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/lists")
+    fetch("/api/lists")
       .then((res) => res.json())
       .then((data) => setLists(data))
       .catch((err) => console.log(err));
@@ -17,7 +17,7 @@ function App() {
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    await fetch('http://localhost:3000/api/list/create', {
+    await fetch('/api/list/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
