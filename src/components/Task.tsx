@@ -18,9 +18,12 @@ function TaskCard({ _id, title, isComplete, onCheckTask, onDeleteTask }: TaskPro
    * TODO: what's in the dependency list?
    *       what's `invariant(el)` https://atlassian.design/components/pragmatic-drag-and-drop/tutorial
    */
+
+  console.log('=== dragging: ', dragging);
+
   useEffect(() => {
     const el = ref.current;
-    
+
     // We must check if `el` exists because React refs start as `null`
     if (!el) return;
 

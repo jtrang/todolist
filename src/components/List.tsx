@@ -37,7 +37,7 @@ export function List({ _id, title, tasks }: ListProps) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        _id,
+        _id, // the list ID
         title: event.target.newTaskTitle.value
       })
     })

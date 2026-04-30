@@ -95,7 +95,7 @@ app.post('/api/list/create', async (req, res) => {
   }
 });
 
-app.get('/api/tasks', async (req, res) => {
+app.get('/api/tasks', async (_, res) => {
   console.log('api/tasks');
   try {
     const tasks = await TaskModel.find();
@@ -106,7 +106,7 @@ app.get('/api/tasks', async (req, res) => {
   }
 });
 
-app.get('/api/lists', async (req, res) => {
+app.get('/api/lists', async (_, res) => {
   console.log('api/lists');
   try {
     const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
