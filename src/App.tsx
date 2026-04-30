@@ -1,39 +1,33 @@
 import { useState, useEffect } from 'react';
 import List, { type ListProps } from './components/List';
 import NewList from './components/NewList';
-
+import { getAllLists, createList } from './services/listService.js';
 import './App.css';
 
 function App() {
   const [lists, setLists] = useState<ListProps[]>([]);
 
   useEffect(() => {
-    fetch('/api/lists')
-      .then((res) => res.json())
-      .then((lists) => setLists(lists))
-      .catch((err) => console.log(err));
+    async function loadAllLists() {
+      try {
+        const allLists = await getAllLists();
+        setLists(allLists);
+      } catch (err) {
+        console.log(err);
+        alert(`Failed to load all lists. Error message: ${err}`);
+      }
+    }
+
+    loadAllLists();
   }, []);
 
-  async function handleSubmitNewList(
-    event: React.SubmitEvent<HTMLFormElement>,
-  ) {
-    event.preventDefault();
-
-    await fetch('/api/list/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: event.target.newListTitle.value,
-      }),
-    })
-      .then((res) => res.json())
-      .then((list) => {
-        setLists([...lists, list]);
-        event.target.newListTitle.value = '';
-      })
-      .catch((err) => console.log(err));
+  async function handleSubmitNewList(title: string) {
+    try {
+      const list = await createList(title);
+      setLists([...lists, list]);
+    } catch (err) {
+      alert(`Failed to create list. Please try again. ${err}`);
+    }
   }
 
   async function onDeleteList(listId: string) {
