@@ -1,3 +1,8 @@
+/**
+ * NOTE: Node.js strictly requires .js extensions for ESM imports
+ *       TypeScript compiler (tsc) does not modify the import path
+ *       works locally because the tsx tool intercepts Node's module loading
+ */
 import express from 'express';
 import { connectDb } from './utils/db.js';
 import { TaskModel } from "./models/Task.js";
