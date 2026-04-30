@@ -27,8 +27,8 @@ export function List({ _id, title, tasks }: ListProps) {
       onDrop: () => setIsDraggedOver(false),
     });
   }, []);
-  // TODO: rename function to reflect action
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+
+  async function handleSubmitNewTask(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     await fetch('/api/task/create', {
@@ -97,7 +97,7 @@ export function List({ _id, title, tasks }: ListProps) {
             onCheckTask={(e) => onCheckTask(task._id, e.target.checked)}
             onDeleteTask={() => onDeleteTask(task._id)} />
         ))}
-        <NewTask handleSubmit={handleSubmit} />
+        <NewTask handleSubmitNewTask={handleSubmitNewTask} />
       </ul>
     </div>
   );

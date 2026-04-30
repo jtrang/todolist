@@ -8,13 +8,15 @@ function App() {
   const [lists, setLists] = useState<ListProps[]>([]);
 
   useEffect(() => {
-    fetch("/api/lists")
+    fetch('/api/lists')
       .then((res) => res.json())
       .then((data) => setLists(data))
       .catch((err) => console.log(err));
   }, []);
 
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmitNewList(
+    event: React.SubmitEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
     await fetch('/api/list/create', {
@@ -23,29 +25,30 @@ function App() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        title: event.target.newListTitle.value
-      })
+        title: event.target.newListTitle.value,
+      }),
     })
-      .then(res => res.json())
-      .then(data => {
-        // TODO something here
-        console.log('inside handlesubmit', data);
+      .then((res) => res.json())
+      .then((list) => {
+        setLists([...lists, list]);
+        event.target.newListTitle.value = '';
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
-
 
   return (
     <>
-      {lists && <div>
-        <h1>To Do List</h1>
-        <ul className="listWrapper">
-          {lists.map((list) => (
-            <List key={list._id} {...list} />
-          ))}
-        </ul>
-      </div>}
-      <NewList handleSubmit={handleSubmit}></NewList>
+      {lists && (
+        <div>
+          <h1>To Do List</h1>
+          <ul className="listWrapper">
+            {lists.map((list) => (
+              <List key={list._id} {...list} />
+            ))}
+          </ul>
+        </div>
+      )}
+      <NewList handleSubmitNewList={handleSubmitNewList}></NewList>
     </>
   );
 }

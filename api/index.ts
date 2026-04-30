@@ -5,9 +5,9 @@
  */
 import express from 'express';
 import { connectDb } from './utils/db.js';
-import { TaskModel } from "./models/Task.js";
+import { TaskModel } from './models/Task.js';
 import type { ITask } from './models/Task.js';
-import { ListModel } from "./models/List.js";
+import { ListModel } from './models/List.js';
 
 connectDb();
 
@@ -37,7 +37,7 @@ app.post('/api/task/create', async (req, res) => {
     const list = await ListModel.findOneAndUpdate(
       { _id: listId },
       { $push: { tasks: task._id } },
-      { returnDocument: 'after' }
+      { returnDocument: 'after' },
     ).populate<{ tasks: ITask[] }>('tasks');
 
     res.json(list);
@@ -63,7 +63,7 @@ app.post('/api/task/status', async (req, res) => {
     const task = await TaskModel.findOneAndUpdate(
       { _id: taskId },
       { isComplete: status },
-      { returnDocument: 'after' }
+      { returnDocument: 'after' },
     );
 
     if (!task) {
@@ -93,7 +93,12 @@ app.delete('/api/task/delete', async (req, res) => {
 app.post('/api/list/create', async (req, res) => {
   console.log('api/list/create');
   try {
-    const listTitle = req.body?.title || 'New List';
+    const listTitle = req.body?.title;
+
+    if (!listTitle) {
+      return res.status(400).json({ error: 'List title is required' });
+    }
+
     const list = await ListModel.create({ title: listTitle });
     res.json(list);
   } catch (err) {
