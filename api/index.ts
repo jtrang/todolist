@@ -1,8 +1,8 @@
 import express from 'express';
-import { connectDb } from './utils/db';
-import { TaskModel } from "./models/Task.ts";
-import type { ITask } from './models/Task.ts';
-import { ListModel } from "./models/List.ts";
+import { connectDb } from './utils/db.js';
+import { TaskModel } from "./models/Task.js";
+import type { ITask } from './models/Task.js';
+import { ListModel } from "./models/List.js";
 
 connectDb();
 
