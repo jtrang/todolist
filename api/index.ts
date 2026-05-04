@@ -123,7 +123,7 @@ app.get('/api/lists', async (_, res) => {
 app.post('/api/list/create', async (req, res) => {
   console.log('api/list/create');
   try {
-    const listTitle = req.body?.title;
+    const listTitle = req.body?.listTitle;
 
     if (!listTitle) {
       return res.status(400).json({ error: 'List title is required' });
@@ -139,11 +139,11 @@ app.post('/api/list/create', async (req, res) => {
 
 app.delete('/api/list/delete', async (req, res) => {
   try {
-    const list = await ListModel.findByIdAndDelete(req.body?._id);
+    const list = await ListModel.findByIdAndDelete(req.body?.listId);
     if (!list) {
       return res.status(404).json({ error: 'List not found' });
     }
-    res.status(200).send(`Task with id ${list._id} delete successfully`);
+    res.status(200).send(`List with id ${list._id} delete successfully`);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: 'Failed to delete list' });

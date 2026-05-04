@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import List, { type ListProps } from './components/List';
 import NewList from './components/NewList';
-import { getAllLists, createList } from './services/listService.js';
+import { getAllLists, createList, deleteList } from './services/listService.js';
 import './App.css';
 
 function App() {
@@ -31,21 +31,12 @@ function App() {
   }
 
   async function onDeleteList(listId: string) {
-    await fetch('/api/list/delete', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id: listId,
-      }),
-    })
-      .then(() => {
-        setLists((prevLists) =>
-          prevLists.filter((list) => list._id !== listId),
-        );
-      })
-      .catch((err) => console.log(err));
+    try {
+      await deleteList(listId);
+      setLists((prevLists) => prevLists.filter((list) => list._id !== listId));
+    } catch (err) {
+      alert(`Failed to delete list. Please try again. ${err}`);
+    }
   }
 
   return (

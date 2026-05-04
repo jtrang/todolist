@@ -19,9 +19,7 @@ export async function createList(listTitle: string) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        title: listTitle,
-      }),
+      body: JSON.stringify({ listTitle }),
     });
 
     return res.json();
@@ -32,4 +30,19 @@ export async function createList(listTitle: string) {
   }
 }
 
-export async function deleteList() {}
+export async function deleteList(listId: string) {
+  try {
+    const res = await fetch('/api/list/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ listId }),
+    });
+
+    return res.status;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
