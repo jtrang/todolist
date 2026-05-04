@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { createTask } from '../services/taskService.js';
+import {
+  createTask,
+  deleteTask,
+  updateTaskStatus,
+} from '../services/taskService.js';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import TaskCard, { type TaskProps } from './Task';
 import NewTask from './NewTask';
@@ -40,42 +44,27 @@ export function List({ _id, title, tasks, onDeleteList }: ListProps) {
   }
 
   async function onCheckTask(taskId: string, isComplete: boolean) {
-    await fetch('/api/task/status', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id: taskId,
-        isComplete,
-      }),
-    })
-      .then(() => {
-        setListTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === taskId ? { ...task, isComplete } : task,
-          ),
-        );
-      })
-      .catch((err) => console.log(err));
+    try {
+      await updateTaskStatus(taskId, isComplete);
+      setListTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId ? { ...task, isComplete } : task,
+        ),
+      );
+    } catch (err) {
+      alert(`Failed to update task. Please try again. Error message: ${err}`);
+    }
   }
 
   async function onDeleteTask(taskId: string) {
-    await fetch('/api/task/delete', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id: taskId,
-      }),
-    })
-      .then(() => {
-        setListTasks((prevTasks) =>
-          prevTasks.filter((task) => task._id !== taskId),
-        );
-      })
-      .catch((err) => console.log(err));
+    try {
+      await deleteTask(taskId);
+      setListTasks((prevTasks) =>
+        prevTasks.filter((task) => task._id !== taskId),
+      );
+    } catch (err) {
+      alert(`Failed to delete task. Please try again. Error message: ${err}`);
+    }
   }
 
   return (
