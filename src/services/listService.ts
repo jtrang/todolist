@@ -5,14 +5,11 @@ export async function getAllLists() {
   } catch (err) {
     // TODO handle error
     console.log(err);
+    throw err;
   }
 }
 
 export async function createList(listTitle: string) {
-  /**
-   * TODO: fail fast! Guard against missing list title
-   */
-  console.log('== inside here ==');
   try {
     const res = await fetch('/api/list/create', {
       method: 'POST',
@@ -42,6 +39,7 @@ export async function deleteList(listId: string) {
 
     return res.status;
   } catch (err) {
+    // TODO handle error
     console.log(err);
     throw err;
   }

@@ -13,7 +13,6 @@ function App() {
         const allLists = await getAllLists();
         setLists(allLists);
       } catch (err) {
-        console.log(err);
         alert(`Failed to load all lists. Error message: ${err}`);
       }
     }
@@ -26,7 +25,7 @@ function App() {
       const list = await createList(title);
       setLists([...lists, list]);
     } catch (err) {
-      alert(`Failed to create list. Please try again. ${err}`);
+      alert(`Failed to create list. Please try again. Error message: ${err}`);
     }
   }
 
@@ -35,7 +34,7 @@ function App() {
       await deleteList(listId);
       setLists((prevLists) => prevLists.filter((list) => list._id !== listId));
     } catch (err) {
-      alert(`Failed to delete list. Please try again. ${err}`);
+      alert(`Failed to delete list. Please try again. Error message: ${err}`);
     }
   }
 

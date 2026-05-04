@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createTask } from '../services/taskService.js';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import TaskCard, { type TaskProps } from './Task';
 import NewTask from './NewTask';
@@ -29,27 +30,13 @@ export function List({ _id, title, tasks, onDeleteList }: ListProps) {
     });
   }, []);
 
-  async function handleSubmitNewTask(
-    event: React.SubmitEvent<HTMLFormElement>,
-  ) {
-    event.preventDefault();
-
-    await fetch('/api/task/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        _id, // the list ID
-        title: event.target.newTaskTitle.value,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setListTasks(data.tasks);
-        event.target.newTaskTitle.value = '';
-      })
-      .catch((err) => console.log(err));
+  async function handleSubmitNewTask(title: string) {
+    try {
+      const list = await createTask(_id, title);
+      setListTasks(list.tasks);
+    } catch (err) {
+      alert(`Failed to create task. Please try again. Error message: ${err}`);
+    }
   }
 
   async function onCheckTask(taskId: string, isComplete: boolean) {

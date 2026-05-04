@@ -38,8 +38,8 @@ app.get('/api/tasks', async (_, res) => {
 app.post('/api/task/create', async (req, res) => {
   console.log('api/task/create');
   try {
-    const listId = req.body?._id;
-    const taskTitle = req.body?.title;
+    const listId = req.body?.listId;
+    const taskTitle = req.body?.taskTitle;
 
     if (!listId) {
       return res.status(400).json({ error: 'List ID is required' });
@@ -92,7 +92,7 @@ app.post('/api/task/status', async (req, res) => {
 });
 
 app.delete('/api/task/delete', async (req, res) => {
-  console.log('api/task/delete', req.body);
+  console.log('api/task/delete');
   try {
     const task = await TaskModel.findByIdAndDelete(req.body?._id);
     if (!task) {
@@ -143,7 +143,7 @@ app.delete('/api/list/delete', async (req, res) => {
     if (!list) {
       return res.status(404).json({ error: 'List not found' });
     }
-    res.status(200).send(`List with id ${list._id} delete successfully`);
+    res.status(200).send(`List with id ${list._id} deleted successfully`);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: 'Failed to delete list' });
