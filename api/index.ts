@@ -9,7 +9,9 @@ import { TaskModel } from './models/Task.js';
 import type { ITask } from './models/Task.js';
 import { ListModel } from './models/List.js';
 
-connectDb();
+if (process.env.NODE_ENV !== 'test') {
+  connectDb();
+}
 
 const app = express();
 app.use(express.json());
@@ -25,7 +27,6 @@ if (!process.env.VERCEL) {
  */
 
 app.get('/api/tasks', async (_, res) => {
-  console.log('api/tasks');
   try {
     const tasks = await TaskModel.find();
     res.json(tasks);
@@ -36,7 +37,6 @@ app.get('/api/tasks', async (_, res) => {
 });
 
 app.post('/api/task/create', async (req, res) => {
-  console.log('api/task/create');
   try {
     const listId = req.body?.listId;
     const taskTitle = req.body?.taskTitle;
@@ -63,7 +63,6 @@ app.post('/api/task/create', async (req, res) => {
 });
 
 app.post('/api/task/status', async (req, res) => {
-  console.log('api/task/status');
   try {
     const taskId = req.body?._id;
     const status = req.body?.isComplete;
@@ -92,7 +91,6 @@ app.post('/api/task/status', async (req, res) => {
 });
 
 app.delete('/api/task/delete', async (req, res) => {
-  console.log('api/task/delete');
   try {
     const task = await TaskModel.findByIdAndDelete(req.body?._id);
     if (!task) {
@@ -110,7 +108,6 @@ app.delete('/api/task/delete', async (req, res) => {
  */
 
 app.get('/api/lists', async (_, res) => {
-  console.log('api/lists');
   try {
     const lists = await ListModel.find().populate<{ tasks: ITask[] }>('tasks');
     res.json(lists);
@@ -121,11 +118,10 @@ app.get('/api/lists', async (_, res) => {
 });
 
 app.post('/api/list/create', async (req, res) => {
-  console.log('api/list/create');
   try {
     const listTitle = req.body?.listTitle;
 
-    if (!listTitle) {
+    if (typeof listTitle !== 'string' || listTitle.trim() === '') {
       return res.status(400).json({ error: 'List title is required' });
     }
 
